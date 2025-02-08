@@ -1,4 +1,14 @@
 var canvas;
+
+function deleteSelected() {
+    if (canvas) {
+        let obj = canvas.getActiveObject();
+        if (obj && !obj.isEditing) {
+            canvas.remove(obj);
+        }
+    }
+}
+
 // Meme process
 function processMeme(memeInfo) {
     // Responsive canvas
@@ -88,7 +98,14 @@ function processMeme(memeInfo) {
             }
         }
         reader.readAsDataURL(file)
-    })
+    });
+
+    $("#canvas-delete").off('click').on('click', function () {
+        deleteSelected();
+    });
+    $("#canvas-clear").off('click').on('click', function () {
+        canvas.getObjects().forEach(el => canvas.remove(el));
+    });
 
     // Custom control
     fabric.Object.prototype.set({
