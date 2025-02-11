@@ -139,5 +139,20 @@ function processMeme(memeInfo) {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    })
+    });
+
+    $('#copy-meme').off('click').on('click', function () {
+        let dataURL = canvas.toDataURL({format: 'png'}); // Get image as Base64
+        fetch(dataURL)
+            .then(res => res.blob()) // Convert Base64 to Blob
+            .then(blob => {
+                const item = new ClipboardItem({'image/png': blob});
+                navigator.clipboard.write([item])
+                    // .then(() => alert('Meme copied to clipboard!'))
+                    .then()  // nothing for now
+                    .catch(err => console.error('Failed to copy image:', err));
+            })
+            .catch(err => console.error('Error converting image:', err));
+
+    });
 }
