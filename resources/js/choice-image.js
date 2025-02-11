@@ -11,16 +11,10 @@ $(function () {
         $('.choice-section').trigger('choice-done', imgInfo)
     })
 
-    // Event: Upload local image
-    $('#meme-input').on('change', function () {
-        const file = this.files[0];
-        const fileType = file['type'];
-
-        // Reset file input
-        $('#meme-input').val('')
-
+    // Helper function to process file
+    function processImageFile(file) {
         // Validate this is image
-        if (!isImage(fileType)) {
+        if (!isImage(file.type)) {
             showAlert('Error! Invalid Image')
             return
         }
@@ -39,7 +33,27 @@ $(function () {
             }
         }
         reader.readAsDataURL(file)
+    }
+
+    // Event: Upload local image
+    $('#meme-input').on('change', function () {
+        const file = this.files[0];
+        // Reset file input
+        $('#meme-input').val('')
+        processImageFile(file)
     })
+
+    // Event: Paste image
+    $(document).on('paste', function(event) {
+        const items = (event.originalEvent.clipboardData || event.clipboardData).items;
+        for (const item of items) {
+            if (item.type.indexOf('image') === 0) {
+                const file = item.getAsFile();
+                processImageFile(file);
+                break;
+            }
+        }
+    });
 
     // Event: Choice was made
     $('.choice-section').on('choice-done', function (e, imgInfo) {
